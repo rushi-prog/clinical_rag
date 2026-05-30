@@ -13,7 +13,6 @@ client = Groq(
     )
 )
 
-
 def generate_answer(
     query,
     retrieved_docs
@@ -28,8 +27,14 @@ You are a clinical research assistant.
 
 Use ONLY the provided context.
 
-If the answer is not present,
+If the answer cannot be found,
 say so.
+
+Whenever you use information,
+cite the source number.
+
+Example:
+Metformin improves glucose control [Source 1].
 
 Context:
 {context}

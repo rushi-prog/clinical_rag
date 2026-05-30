@@ -80,9 +80,9 @@ def main():
     )
 
     top_docs = [
-        doc
-        for doc, score
-        in reranked[:3]
+        f"[Source {i+1}]\n{doc}"
+        for i, (doc, score)
+        in enumerate(reranked[:3])
     ]
 
     answer = generate_answer(
