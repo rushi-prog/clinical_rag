@@ -1,6 +1,6 @@
 from src.ingestion.data_loader import load_trials
 from src.ingestion.chunker import chunk_text
-
+from src.retrieval.bm25_store import BM25Store
 from src.retrieval.embedder import embed_texts
 from src.retrieval.vector_store import VectorStore
 
@@ -36,6 +36,15 @@ def build_index():
     )
 
     store.save(
+        "data/indexes/clinical_trials"
+    )
+    bm25_store = BM25Store()
+
+    bm25_store.build(
+        chunks
+    )
+
+    bm25_store.save(
         "data/indexes/clinical_trials"
     )
 

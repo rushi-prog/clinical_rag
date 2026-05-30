@@ -1,5 +1,5 @@
 from rank_bm25 import BM25Okapi
-
+import pickle
 
 class BM25Store:
 
@@ -49,3 +49,35 @@ class BM25Store:
         )
 
         return ranked[:k]
+
+    def save(self, path):
+
+        with open(
+            f"{path}.bm25",
+            "wb"
+        ) as f:
+
+            pickle.dump(
+            {
+                "documents": self.documents,
+                "tokenized_docs": self.tokenized_docs
+            },
+            f
+        )
+    
+    def load(self, path):
+
+        with open(
+        f"{path}.bm25",
+        "rb"
+        ) as f:
+
+            data = pickle.load(f)
+
+        self.documents = data["documents"]
+
+        self.tokenized_docs = data["tokenized_docs"]
+
+        self.bm25 = BM25Okapi(
+            self.tokenized_docs
+        )

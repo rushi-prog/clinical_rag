@@ -9,54 +9,36 @@ from src.generation.rag_chain import (
     generate_answer
 )
 
-from src.ingestion.data_loader import (
-    load_trials
-)
 
-
-def build_retrieval_pipeline():
-
-    df = load_trials(
-        "data/clinical_trials.csv"
-    )
-
-    documents = list(
-        df["abstract"]
-    )
-
-    embeddings = embed_texts(
-        documents
-    )
+def load_retrieval_pipeline():
 
     vector_store = VectorStore(
         dimension=384
     )
 
-    vector_store.add_documents(
-        embeddings,
-        documents
+    vector_store.load(
+        "data/indexes/clinical_trials"
     )
 
     bm25_store = BM25Store()
 
-    bm25_store.build(
-        documents
+    bm25_store.load(
+        "data/indexes/clinical_trials"
     )
 
     retriever = HybridRetriever(
         vector_store,
         bm25_store
     )
-
+    # print("Loading saved indexes...")
     return retriever
 
 
 def main():
 
     retriever = (
-        build_retrieval_pipeline()
+        load_retrieval_pipeline()
     )
-
     reranker = Reranker()
 
     query = input(
