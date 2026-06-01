@@ -6,7 +6,11 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
 
 def load_trials(csv_path: str):
+
     df = pd.read_csv(csv_path)
+
+    df = df.fillna("")
+
     return df
 
 

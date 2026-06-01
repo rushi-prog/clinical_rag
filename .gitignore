@@ -3,3 +3,10 @@ __pycache__/
 .env
 *.pyc
 .vscode/
+data/clinical_trials.csv
+
+data/indexes/
+
+*.index
+*.pkl
+*.bm25

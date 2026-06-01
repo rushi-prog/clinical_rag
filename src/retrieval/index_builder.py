@@ -11,16 +11,55 @@ def build_index():
         "data/clinical_trials.csv"
     )
 
+    documents = []
+    metadata = []
+
+    for _, row in df.iterrows():
+
+        text = f"""
+Title: {row['Study Title']}
+
+Condition: {row['Conditions']}
+
+Intervention: {row['Interventions']}
+
+Summary: {row['Brief Summary']}
+"""
+
+        documents.append(text)
+
+        metadata.append(
+            {
+                "nct_id": row["NCT Number"],
+                "title": row["Study Title"]
+            }
+        )
+
     chunks = []
 
-    for abstract in df["abstract"]:
+    chunk_metadata = []
+
+    for doc, meta in zip(
+        documents,
+        metadata
+    ):
+
+        doc_chunks = chunk_text(
+            doc,
+            chunk_size=50
+        )
 
         chunks.extend(
-            chunk_text(
-                abstract,
-                chunk_size=50
-            )
+            doc_chunks
         )
+
+        chunk_metadata.extend(
+            [meta] * len(doc_chunks)
+        )
+
+    print(
+        f"Created {len(chunks)} chunks"
+    )
 
     embeddings = embed_texts(
         chunks
@@ -32,12 +71,14 @@ def build_index():
 
     store.add_documents(
         embeddings,
-        chunks
+        chunks,
+        chunk_metadata
     )
 
     store.save(
         "data/indexes/clinical_trials"
     )
+
     bm25_store = BM25Store()
 
     bm25_store.build(
@@ -51,8 +92,6 @@ def build_index():
     print(
         f"Indexed {len(chunks)} chunks"
     )
-
-
 if __name__ == "__main__":
 
     build_index()

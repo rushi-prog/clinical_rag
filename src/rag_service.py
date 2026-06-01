@@ -23,7 +23,7 @@ def ask(query: str):
 
     retrieved = retriever.search(
         query,
-        k=5
+        k=20
     )
 
     docs = [
@@ -39,7 +39,7 @@ def ask(query: str):
     top_docs = [
         f"[Source {i+1}]\n{doc}"
         for i, (doc, score)
-        in enumerate(reranked[:3])
+        in enumerate(reranked[:5])
     ]
 
     answer = generate_answer(

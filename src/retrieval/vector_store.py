@@ -14,11 +14,13 @@ class VectorStore:
         )
 
         self.documents = []
+        self.metadata = []
 
     def add_documents(
         self,
         embeddings,
-        documents
+        documents,
+        metadata=None
     ):
 
         embeddings = np.array(
@@ -31,6 +33,10 @@ class VectorStore:
         self.documents.extend(
             documents
         )
+        
+        if metadata:
+
+            self.metadata.extend(metadata)
 
     def search(
         self,
@@ -53,7 +59,8 @@ class VectorStore:
         for idx in indices[0]:
 
             results.append(
-                self.documents[idx]
+                self.documents[idx],
+                self.metadata[idx]
             )
 
         return results
@@ -71,10 +78,13 @@ class VectorStore:
         ) as f:
 
             pickle.dump(
-                self.documents,
+                {
+                    "documents": self.documents,
+                    "metadata": self.metadata
+                },
                 f
             )
-
+            
     def load(self, path):
 
         self.index = faiss.read_index(
@@ -86,4 +96,7 @@ class VectorStore:
             "rb"
         ) as f:
 
-            self.documents = pickle.load(f)
+            data = pickle.load(f)
+
+            self.documents = data["documents"]
+            self.metadata = data["metadata"]
