@@ -59,9 +59,15 @@ class VectorStore:
         for idx in indices[0]:
 
             results.append(
-                self.documents[idx],
-                self.metadata[idx]
+                 self.documents[idx]
             )
+
+            # results.append(
+            #     (
+            #         self.documents[idx],
+            #         self.metadata[idx]
+            #     )
+            # )
 
         return results
 
